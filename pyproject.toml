@@ -1,0 +1,106 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vidkit"
+version = "1.0.0"
+description = "Production-grade CLI to strip video metadata and split videos without re-encoding."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "VidKit Contributors" }]
+keywords = ["ffmpeg", "video", "metadata", "split", "cli"]
+classifiers = [
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Multimedia :: Video",
+]
+dependencies = [
+    "typer>=0.12",
+    "rich>=13.7",
+    "pydantic>=2.7",
+    "pydantic-settings>=2.3",
+    "structlog>=24.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.2",
+    "pytest-cov>=5.0",
+    "ruff>=0.5",
+    "mypy>=1.10",
+]
+
+[project.scripts]
+vidkit = "vidkit.cli.app:main"
+
+[project.urls]
+Homepage = "https://example.com/vidkit"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+vidkit = ["py.typed"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W",    # pycodestyle
+    "F",         # pyflakes
+    "I",         # isort
+    "B",         # bugbear
+    "UP",        # pyupgrade
+    "C4",        # comprehensions
+    "SIM",       # simplify
+    "RET",       # return
+    "PL",        # pylint
+    "RUF",       # ruff-specific
+]
+ignore = [
+    "PLR0913",   # many CLI options are inherent to Typer commands
+    "PLR2004",   # magic-value comparisons in parsers/tests are clearer inline
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["PLR0915", "SIM117"]
+
+[tool.mypy]
+strict = true
+python_version = "3.11"
+mypy_path = "src"
+packages = ["vidkit"]
+warn_unreachable = true
+show_error_codes = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+markers = [
+    "integration: tests that require a real ffmpeg/ffprobe binary",
+]
+
+[tool.coverage.run]
+source = ["vidkit"]
+branch = true
+# Worker functions execute inside ProcessPoolExecutor children; enable
+# subprocess-less parallel measurement so their lines are still counted.
+concurrency = ["multiprocessing"]
+parallel = true
+sigterm = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+]
