@@ -194,6 +194,4 @@ in `src/vidkit/core` (probe / cleaner / splitter services on top of a single
 `FFmpeg` subprocess wrapper — the only module that spawns processes); Pydantic
 models in `src/vidkit/models`; typed exceptions with exit codes in
 `exceptions.py`. Segment planning is pure math, unit-tested without ffmpeg;
-integration tests generate real fixtures with ffmpeg's `lavfi` test sources.
-#   V i d K i t  
- 
+integration tests generate real fixtures with ffmpeg's `lavfi` test sources. 
